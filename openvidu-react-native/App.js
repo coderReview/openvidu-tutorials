@@ -16,8 +16,8 @@ import axios from 'axios';
 
 import { OpenViduReactNativeAdapter, OpenVidu, RTCView } from 'openvidu-react-native-adapter';
 
-const OPENVIDU_SERVER_URL = 'https://demos.openvidu.io';
-const OPENVIDU_SERVER_SECRET = 'MY_SECRET';
+const OPENVIDU_SERVER_URL = 'https://call-next.openvidu.io';
+const OPENVIDU_SERVER_SECRET = 'owuus9neTe';
 
 
 type Props = {};
@@ -176,9 +176,11 @@ export default class App extends Component<Props> {
 
     getNicknameTag(stream) {
         // Gets the nickName of the user
-        if (stream.connection && JSON.parse(stream.connection.data) && JSON.parse(stream.connection.data).clientData) {
-            return JSON.parse(stream.connection.data).clientData;
-        }
+        try {
+            if (stream.connection && JSON.parse(stream.connection.data) && JSON.parse(stream.connection.data).clientData) {
+                return JSON.parse(stream.connection.data).clientData;
+            }
+        } catch (error) { }
         return '';
     }
 
