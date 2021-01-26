@@ -4,7 +4,7 @@
 	<title>openvidu-mvc-node</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"></meta>
-	<link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon"></link>
+	<link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon"></link>
 
 	<!-- Bootstrap -->
 	<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -13,8 +13,8 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"></link>
 	<!-- Bootstrap -->
 
-	<link rel="styleSheet" href="style.css" type="text/css" media="screen"></link>
-	<script src="openvidu-browser-2.16.0.js"></script>
+	<link rel="styleSheet" href="/static/style.css" type="text/css" media="screen"></link>
+	<script src="/static/openvidu-browser-2.16.0.js"></script>
 </head>
 
 <body>
@@ -23,7 +23,7 @@
 		<div class="container">
 			<div class="navbar-header">
 				<a class="navbar-brand" href="/">
-					<img class="demo-logo" src="images/openvidu_vert_white_bg_trans_cropped.png" /> MVC Node</a>
+					<img class="demo-logo" src="/static/images/openvidu_vert_white_bg_trans_cropped.png" /> MVC Node</a>
 				<a class="navbar-brand nav-icon" href="https://github.com/OpenVidu/openvidu-tutorials/tree/master/openvidu-mvc-node" title="GitHub Repository"
 				 target="_blank">
 					<i class="fa fa-github" aria-hidden="true"></i>
@@ -38,8 +38,10 @@
 	<div id="main-container" class="container">
 		<div id="logged">
 			<div id="session">
+				<input id="session-url" type="text" readonly value="https://localhost:5000/dashboard/<%= sessionName %>"></input>
+				<button onclick="copyUrl()">Copy url</button>
 				<div id="session-header">
-					<h1 id="session-title"><%= sessionName %></h1>
+					<h4 id="session-title"><%= sessionName %></h4>
 					<form action="/leave-session" method="post">
 						<input type="hidden" name="sessionname" value="<%= sessionName %>"></input>
 						<input type="hidden" name="token" value="<%= token %>"></input>
@@ -61,7 +63,7 @@
 		<div class="container">
 			<div class="text-muted">OpenVidu © 2017</div>
 			<a href="http://www.openvidu.io/" target="_blank">
-				<img class="openvidu-logo" src="images/openvidu_globe_bg_transp_cropped.png" />
+				<img class="openvidu-logo" src="/static/images/openvidu_globe_bg_transp_cropped.png" />
 			</a>
 		</div>
 	</footer>
@@ -175,6 +177,62 @@
 		session.disconnect();
 	}
 
+	function copyToClipboard(elem) {
+		// create hidden text element, if it doesn't already exist
+		var targetId = "_hiddenCopyText_";
+		var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
+		var origSelectionStart, origSelectionEnd;
+		if (isInput) {
+			// can just use the original source element for the selection and copy
+			target = elem;
+			origSelectionStart = elem.selectionStart;
+			origSelectionEnd = elem.selectionEnd;
+		} else {
+			// must use a temporary form element for the selection and copy
+			target = document.getElementById(targetId);
+			if (!target) {
+				var target = document.createElement("textarea");
+				target.style.position = "absolute";
+				target.style.left = "-9999px";
+				target.style.top = "0";
+				target.id = targetId;
+				document.body.appendChild(target);
+			}
+			target.textContent = elem.textContent;
+		}
+		// select the content
+		var currentFocus = document.activeElement;
+		target.focus();
+		target.setSelectionRange(0, target.value.length);
+		
+		// copy the selection
+		var succeed;
+		try {
+			succeed = document.execCommand("copy");
+		} catch(e) {
+			succeed = false;
+		}
+		// restore original focus
+		if (currentFocus && typeof currentFocus.focus === "function") {
+			currentFocus.focus();
+		}
+		
+		if (isInput) {
+			// restore prior selection
+			elem.setSelectionRange(origSelectionStart, origSelectionEnd);
+		} else {
+			// clear temporary content
+			target.textContent = "";
+		}
+		return succeed;
+	}
+
+	function copyUrl() {
+		/* Get the text field */
+		var copyText = document.getElementById("session-url");
+		copyToClipboard(copyText);
+	}
+
 	function appendUserData(videoElement, connection) {
 		var clientData;
 		var serverData;
@@ -237,7 +295,7 @@
 	}
 
 	function initMainVideoThumbnail() {
-		$('#main-video video').css("background", "url('images/subscriber-msg.jpg') round");
+		$('#main-video video').css("background", "url('/static/images/subscriber-msg.jpg') round");
 	}
 
 	function isPublisher() {

@@ -227,6 +227,11 @@ a:hover .demo-logo {
 	display: inline-block;
 }
 
+#session-url {
+	width: 50%;
+	display: inline-block;
+}
+
 #buttonLeaveSession {
 	float: right;
 	margin-top: 20px;
